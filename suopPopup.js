@@ -74,7 +74,7 @@ class SuopPopup {
     var body = document.querySelector("body")
     body.appendChild(this.createPopupElement())
     document.getElementById(this.id).addEventListener("click", (e) => {
-      if (e.target.id != "suop-popup-content") {
+      if (!e.target.classList.contains("suop-popup-content")) {
         this.killPopup()
       }
     })
