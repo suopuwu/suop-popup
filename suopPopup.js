@@ -67,7 +67,7 @@ class SuopPopup {
 	`
     return element
   }
-  constructor(content = "") {
+  constructor(content = "", deleteOnClose = true) {
     this.level = SuopPopup.zIndex
     this.id = "suop-popup" + this.level
     this._content = content
@@ -75,14 +75,18 @@ class SuopPopup {
     body.appendChild(this.createPopupElement())
     document.getElementById(this.id).addEventListener("click", (e) => {
       if (!e.target.classList.contains("suop-popup-content")) {
-        this.killPopup()
+        if (deleteOnClose) {
+          this.fadeThenDelete()
+        } else {
+          this.killPopup()
+        }
       }
     })
   }
 
   toggle() {
     if (this.#visible) {
-      this.killPopup()
+      this.hidePopup()
     } else {
       this.showPopup()
     }
@@ -97,8 +101,10 @@ class SuopPopup {
     }, 1)
   }
 
-  killPopup() {
+  hidePopup() {
     var popup = document.getElementById(this.id)
+    console.log(this.id)
+
     this.#visible = false
     popup.classList.add("invisible")
     setTimeout(function () {
@@ -106,7 +112,14 @@ class SuopPopup {
     }, 200)
   }
 
-  delete() {
-    document.getElementById(this.id).remove()
+  remove(delay) {
+    var popup = document.getElementById(this.id)
+    setTimeout(() => popup.remove(), delay)
+  }
+
+  hideThenDelete() {
+    console.log(this.id)
+    this.hidePopup()
+    this.remove(200)
   }
 }
