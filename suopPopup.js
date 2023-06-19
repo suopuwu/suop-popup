@@ -76,7 +76,7 @@ class SuopPopup {
     document.getElementById(this.id).addEventListener("click", (e) => {
       if (!e.target.classList.contains("suop-popup-content")) {
         if (deleteOnClose) {
-          this.fadeThenDelete()
+          this.hideThenDelete()
         } else {
           this.killPopup()
         }
@@ -117,7 +117,7 @@ class SuopPopup {
     setTimeout(() => popup.remove(), delay)
   }
 
-  fadeThenDelete() {
+  hideThenDelete() {
     console.log(this.id)
     this.hidePopup()
     this.remove(200)
