@@ -117,7 +117,7 @@ class SuopPopup {
     setTimeout(() => popup.remove(), delay)
   }
 
-  hideThenDelete() {
+  fadeThenDelete() {
     console.log(this.id)
     this.hidePopup()
     this.remove(200)
