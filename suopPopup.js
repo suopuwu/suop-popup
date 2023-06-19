@@ -103,7 +103,6 @@ class SuopPopup {
 
   hidePopup() {
     var popup = document.getElementById(this.id)
-    console.log(this.id)
 
     this.#visible = false
     popup.classList.add("invisible")
@@ -118,7 +117,6 @@ class SuopPopup {
   }
 
   hideThenDelete() {
-    console.log(this.id)
     this.hidePopup()
     this.remove(200)
   }
