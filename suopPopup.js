@@ -37,12 +37,13 @@ class SuopPopup {
 				width: 100%;
 				height: 100%;
 				top: 0;
-        left: 0;
+                left: 0;
 				cursor: pointer;
 				transition: 0.2s all;
 				display: flex;
 				justify-content: center;
 				align-items: center;
+                z-index: ${this.level}
 			}
 
 			#${this.id} > .suop-popup-content {
@@ -74,7 +75,7 @@ class SuopPopup {
     var body = document.querySelector("body")
     body.appendChild(this.createPopupElement())
     document.getElementById(this.id).addEventListener("click", (e) => {
-      if (!e.target.classList.contains("suop-popup-content")) {
+      if (e.target.id == this.id) {
         if (deleteOnClose) {
           this.hideThenDelete()
         } else {
