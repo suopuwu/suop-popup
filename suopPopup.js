@@ -14,14 +14,14 @@ class SuopPopup {
   set content(newContent) {
     document
       .getElementById(this.id)
-      .querySelector(".suop-popup-content").innerHTML = newContent
+      .querySelector('.suop-popup-content').innerHTML = newContent
     this._content = newContent
   }
   createPopupElement() {
-    var element = document.createElement("div")
+    var element = document.createElement('div')
     element.id = this.id
-    element.classList.add("intangible")
-    element.classList.add("invisible")
+    element.classList.add('intangible')
+    element.classList.add('invisible')
     element.innerHTML = `
 			<style>
 			.invisible {
@@ -58,24 +58,26 @@ class SuopPopup {
         position: absolute;
         top: 0;
         left: 0;
-        transform: scale(100%);/*not sure why this makes it bigger*/
         background-color: rgba(0, 0, 0, 0.5);
         line-height: 0;
       }
 			</style>
-      <span class="suop-popup-close-button"><svg height="48px" viewBox="0 0 24 24" width="48px" fill="#aeaeae"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg></span>
+      <svg class="suop-popup-close-button" width="50" viewBox="0 0 24 24" fill="#aeaeae"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
 			<div class="suop-popup-content">${this.content}</div>
 	`
     return element
   }
-  constructor(content = "", deleteOnClose = true) {
+  constructor(content = '', deleteOnClose = true) {
     this.level = SuopPopup.zIndex
-    this.id = "suop-popup" + this.level
+    this.id = 'suop-popup' + this.level
     this._content = content
-    var body = document.querySelector("body")
+    var body = document.querySelector('body')
     body.appendChild(this.createPopupElement())
-    document.getElementById(this.id).addEventListener("click", (e) => {
-      if (e.target.id == this.id) {
+    document.getElementById(this.id).addEventListener('click', (e) => {
+      if (
+        e.target.id == this.id ||
+        e.target.classList.contains('suop-popup-close-button')
+      ) {
         if (deleteOnClose) {
           this.hideThenDelete()
         } else {
@@ -96,9 +98,9 @@ class SuopPopup {
   showPopup() {
     this.#visible = true
     var popup = document.getElementById(this.id)
-    popup.classList.remove("intangible")
+    popup.classList.remove('intangible')
     setTimeout(function () {
-      popup.classList.remove("invisible")
+      popup.classList.remove('invisible')
     }, 1)
   }
 
@@ -106,9 +108,9 @@ class SuopPopup {
     var popup = document.getElementById(this.id)
 
     this.#visible = false
-    popup.classList.add("invisible")
+    popup.classList.add('invisible')
     setTimeout(function () {
-      popup.classList.add("intangible")
+      popup.classList.add('intangible')
     }, 200)
   }
 
