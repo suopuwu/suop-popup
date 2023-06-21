@@ -1,3 +1,11 @@
+//Options are passed in an object like so:
+//{
+//    deleteOnClose: true,
+//    background: '#000000',    <string?>
+//    confirm: null,     <function?>
+//    cancel: null,     <function?>
+//}
+//You only have to fill out options that you use
 class SuopPopup {
   static #globalLevel = 100
   static get zIndex() {
@@ -93,7 +101,7 @@ class SuopPopup {
       }
 
       .suop-popup-background {
-        background-color: white;
+        background-color: ${this.#options.background};
         padding: 10px;
         border-radius: 10px;
         line-height: 0;
@@ -131,7 +139,7 @@ class SuopPopup {
 			</style>
       <svg class="suop-popup-close-button" width="50" viewBox="0 0 24 24" fill="#aeaeae"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
 			<div class="${
-        this.#options.hasBackground ? 'suop-popup-background' : ''
+        this.#options.background != null ? 'suop-popup-background' : ''
       }" id="suop-popup-wrapper">
         <div class="suop-popup-content">${this.content}</div>
       </div>
@@ -154,7 +162,7 @@ class SuopPopup {
   #fillOptions() {
     const defaultOptions = {
       deleteOnClose: true,
-      hasBackground: false,
+      background: null,
       confirm: null,
       cancel: null,
     }
