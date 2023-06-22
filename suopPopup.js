@@ -17,6 +17,7 @@ class SuopPopup {
   level
   id
   _content
+  node
 
   get content() {
     return this._content
@@ -29,7 +30,9 @@ class SuopPopup {
   }
 
   #createActions() {
-    var container = document.getElementById('suop-popup-wrapper')
+    var container = document
+      .getElementById(this.id)
+      .querySelector('.suop-popup-wrapper')
     function createAction(iconHtml, callback) {
       var button = document.createElement('span')
       button.innerHTML = iconHtml
@@ -52,11 +55,11 @@ class SuopPopup {
   }
 
   createPopupElement() {
-    var element = document.createElement('div')
-    element.id = this.id
-    element.classList.add('intangible')
-    element.classList.add('invisible')
-    element.innerHTML = `
+    this.node = document.createElement('div')
+    this.node.id = this.id
+    this.node.classList.add('intangible')
+    this.node.classList.add('invisible')
+    this.node.innerHTML = `
 			<style>
 			.invisible {
 				opacity: 0;
@@ -66,26 +69,27 @@ class SuopPopup {
 				display: none !important;
 			}
 			#${this.id} {
-				position: fixed;
+        ${
+          !this.#options.floating
+            ? `
+        position: fixed;
 				background-color: rgba(0, 0, 0, 0.8);
 				width: 100%;
 				height: 100%;
 				top: 0;
-                left: 0;
+        left: 0;
 				cursor: pointer;
-				transition: 0.2s all;
-				display: flex;
+        display: flex;
 				justify-content: center;
 				align-items: center;
-                z-index: ${this.level}
-			}
-
-			#${this.id} > .suop-popup-content {
-        cursor: auto;
-        @media(orientation: landscape) {
-          max-width: 80%;
-				  max-height: 80%;
+        `
+            : `
+        position: absolute;
+        align-text: left;
+            `
         }
+				transition: 0.2s all;
+        z-index: ${this.level}
 			}
 
       .suop-popup-close-button {
@@ -96,20 +100,29 @@ class SuopPopup {
         line-height: 0;
       }
 
-      #suop-popup-wrapper {
+      #${this.id} .suop-popup-wrapper {
         cursor: auto;
+        box-shadow: ${this.#options.shadow ?? 'none'};
+        @media(orientation: landscape) {
+          max-width: 80%;
+				  max-height: 80%;
+        }
+        position: relative;
+        top: ${this.#options.y}px;
+        left: ${this.#options.x}px;
       }
 
       .suop-popup-background {
         background-color: ${this.#options.background};
-        padding: 10px;
-        border-radius: 10px;
+        padding: ${this.#options.padding}px;
+        border-radius: ${this.#options.borderRadius}px;
         line-height: 0;
         text-align: right;
       }
 
       .suop-popup-content {
         line-height: normal
+        
       }
 
       .suop-popup-button {
@@ -137,18 +150,28 @@ class SuopPopup {
       }
 
 			</style>
-      <svg class="suop-popup-close-button" width="50" viewBox="0 0 24 24" fill="#aeaeae"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      ${
+        !this.#options.floating
+          ? `
+        <svg class="suop-popup-close-button" width="50" viewBox="0 0 24 24" fill="#aeaeae"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      `
+          : ''
+      }
+      
 			<div class="${
         this.#options.background != null ? 'suop-popup-background' : ''
-      }" id="suop-popup-wrapper">
+      } suop-popup-wrapper">
         <div class="suop-popup-content">${this.content}</div>
       </div>
 	    `
-    element.onclick = (e) => {
+    this.node.onclick = (e) => {
       if (
         e.target.id == this.id ||
         e.target.classList.contains('suop-popup-close-button')
       ) {
+        if (this.#options.floating) {
+          return
+        }
         if (this.#options.deleteOnClose) {
           this.hideThenDelete()
         } else {
@@ -156,7 +179,7 @@ class SuopPopup {
         }
       }
     }
-    return element
+    return this.node
   }
 
   #fillOptions() {
@@ -165,6 +188,12 @@ class SuopPopup {
       background: null,
       confirm: null,
       cancel: null,
+      borderRadius: 10,
+      padding: 10,
+      floating: false,
+      x: null,
+      y: null,
+      shadow: '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)',
     }
     for (let key of Object.keys(defaultOptions)) {
       if (this.#options[key] === undefined) {

@@ -22,15 +22,20 @@
   <script src="suopPopup.js" defer></script>
   <script defer>
     addEventListener('DOMContentLoaded', () => {
-      var firstOne = new SuopPopup("original content;. jksldkfj lksdfjlikfds jlkjdfslk dsfjlkdsf ldfskjfsdl kjfsdlkj ", {
-        hasBackground: true,
+      var firstOne = new SuopPopup("original content;. jksldkfj lksdfjlikfds jlkjdfslk dsfjlkdsf ldfskjfsdl kjfsdlkj hjkfsadkhj fds jklfdskjl jlfksd ldfskj jkdsfjlk lsdfjk lj kdsfjkl sdfljk fdsljk fdsjlk  ", {
+        background: 'white',
         confirm: () => { console.log('confirmed') },
-        cancel: () => { console.log('cancelled') }
+        cancel: () => { console.log('cancelled') },
+        floating: false,
+        x: -100,
+        y: 300
       })
       firstOne.toggle()
       // firstOne.content = "test"
       // var secondOne = new SuopPopup()
       // secondOne.toggle()
+      console.log(firstOne)
+
     })
   </script>
 </body>
