@@ -85,7 +85,7 @@ class SuopPopup {
         `
             : `
         position: absolute;
-        align-text: left;
+        display: inline;
             `
         }
 				transition: 0.2s all;
@@ -104,8 +104,8 @@ class SuopPopup {
         cursor: auto;
         box-shadow: ${this.#options.shadow ?? 'none'};
         @media(orientation: landscape) {
-          max-width: 80%;
-				  max-height: 80%;
+          max-width: 80vw;
+				  max-height: 80vh;
         }
         position: relative;
         top: ${this.#options.y}px;
@@ -210,7 +210,7 @@ class SuopPopup {
     this._content = content
     var body = document.querySelector('body')
 
-    body.appendChild(this.createPopupElement())
+    body.prepend(this.createPopupElement())
     this.#createActions()
   }
 
