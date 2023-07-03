@@ -7,59 +7,58 @@
 //}
 //You only have to fill out options that you use
 class SuopPopup {
-  static #globalLevel = 100
-  static get zIndex() {
-    this.#globalLevel++
-    return this.#globalLevel
-  }
-  #visible = false
-  #options
-  level
-  id
-  _content
-  node
-
-  get content() {
-    return this._content
-  }
-  set content(newContent) {
-    document
-      .getElementById(this.id)
-      .querySelector('.suop-popup-content').innerHTML = newContent
-    this._content = newContent
-  }
-
-  #createActions() {
-    var container = document
-      .getElementById(this.id)
-      .querySelector('.suop-popup-wrapper')
-    function createAction(iconHtml, callback) {
-      var button = document.createElement('span')
-      button.innerHTML = iconHtml
-      button.classList.add('suop-popup-button')
-      button.onclick = callback
-      container.append(button)
+    static #globalLevel = 100
+    static get zIndex() {
+        this.#globalLevel++
+        return this.#globalLevel
     }
-    if (this.#options.cancel) {
-      createAction(
-        '<svg viewBox="0 -960 960 960" width="50" fill="#3e3e3e"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></svg>',
-        this.#options.cancel
-      )
-    }
-    if (this.#options.confirm) {
-      createAction(
-        '<svg viewBox="0 -960 960 960" width="50" fill="#3e3e3e"><path d="M378-246 154-470l43-43 181 181 384-384 43 43-427 427Z"/></svg>',
-        this.#options.confirm
-      )
-    }
-  }
+    #visible = false
+    #options
+    level
+    id
+    _content
+    node
+    contentNode
 
-  createPopupElement() {
-    this.node = document.createElement('div')
-    this.node.id = this.id
-    this.node.classList.add('intangible')
-    this.node.classList.add('invisible')
-    this.node.innerHTML = `
+    get content() {
+        return this._content
+    }
+    set content(newContent) {
+        this.contentNode.innerHTML = newContent
+        this._content = newContent
+    }
+
+    #createActions() {
+        var container = document
+            .getElementById(this.id)
+            .querySelector('.suop-popup-wrapper')
+        function createAction(iconHtml, callback) {
+            var button = document.createElement('span')
+            button.innerHTML = iconHtml
+            button.classList.add('suop-popup-button')
+            button.onclick = callback
+            container.append(button)
+        }
+        if (this.#options.cancel) {
+            createAction(
+                '<svg viewBox="0 -960 960 960" width="50" fill="#3e3e3e"><path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></svg>',
+                this.#options.cancel
+            )
+        }
+        if (this.#options.confirm) {
+            createAction(
+                '<svg viewBox="0 -960 960 960" width="50" fill="#3e3e3e"><path d="M378-246 154-470l43-43 181 181 384-384 43 43-427 427Z"/></svg>',
+                this.#options.confirm
+            )
+        }
+    }
+
+    createPopupElement() {
+        this.node = document.createElement('div')
+        this.node.id = this.id
+        this.node.classList.add('intangible')
+        this.node.classList.add('invisible')
+        this.node.innerHTML = `
 			<style>
 			.invisible {
 				opacity: 0;
@@ -69,9 +68,8 @@ class SuopPopup {
 				display: none !important;
 			}
 			#${this.id} {
-        ${
-          !this.#options.floating
-            ? `
+        ${!this.#options.floating
+                ? `
         position: fixed;
 				background-color: rgba(0, 0, 0, 0.8);
 				width: 100%;
@@ -83,11 +81,11 @@ class SuopPopup {
 				justify-content: center;
 				align-items: center;
         `
-            : `
+                : `
         position: absolute;
         display: inline;
             `
-        }
+            }
 				transition: 0.2s all;
         z-index: ${this.level}
 			}
@@ -150,104 +148,103 @@ class SuopPopup {
       }
 
 			</style>
-      ${
-        !this.#options.floating
-          ? `
+      ${!this.#options.floating
+                ? `
         <svg class="suop-popup-close-button" width="50" viewBox="0 0 24 24" fill="#aeaeae"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
       `
-          : ''
-      }
+                : ''
+            }
       
-			<div class="${
-        this.#options.background != null ? 'suop-popup-background' : ''
-      } suop-popup-wrapper">
+			<div class="${this.#options.background != null ? 'suop-popup-background' : ''
+            } suop-popup-wrapper">
         <div class="suop-popup-content">${this.content}</div>
       </div>
 	    `
-    this.node.onclick = (e) => {
-      if (
-        e.target.id == this.id ||
-        e.target.classList.contains('suop-popup-close-button')
-      ) {
-        if (this.#options.floating) {
-          return
+        this.node.onclick = (e) => {
+            if (
+                e.target.id == this.id ||
+                e.target.classList.contains('suop-popup-close-button')
+            ) {
+                if (this.#options.floating) {
+                    return
+                }
+                if (this.#options.deleteOnClose) {
+                    this.hideThenDelete()
+                } else {
+                    this.killPopup()
+                }
+            }
         }
-        if (this.#options.deleteOnClose) {
-          this.hideThenDelete()
+        return this.node
+    }
+
+    #fillOptions() {
+        const defaultOptions = {
+            deleteOnClose: true,
+            background: null,
+            confirm: null,
+            cancel: null,
+            borderRadius: 10,
+            padding: 10,
+            floating: false,
+            x: null,
+            y: null,
+            shadow: '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)',
+        }
+        for (let key of Object.keys(defaultOptions)) {
+            if (this.#options[key] === undefined) {
+                this.#options[key] = defaultOptions[key]
+            }
+        }
+    }
+
+    constructor(content = '', options = {}) {
+        this.#options = options
+        this.#fillOptions()
+        this.level = SuopPopup.zIndex
+        this.id = 'suop-popup' + this.level
+        this._content = content
+        var body = document.querySelector('body')
+
+        body.prepend(this.createPopupElement())
+        this.contentNode = this.node.querySelector('.suop-popup-content')
+        this.#createActions()
+    }
+
+    toggle() {
+        if (this.#visible) {
+            this.hidePopup()
         } else {
-          this.killPopup()
+            this.showPopup()
         }
-      }
     }
-    return this.node
-  }
 
-  #fillOptions() {
-    const defaultOptions = {
-      deleteOnClose: true,
-      background: null,
-      confirm: null,
-      cancel: null,
-      borderRadius: 10,
-      padding: 10,
-      floating: false,
-      x: null,
-      y: null,
-      shadow: '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)',
+    showPopup() {
+        this.#visible = true
+        var popup = document.getElementById(this.id)
+        popup.classList.remove('intangible')
+        setTimeout(function () {
+            popup.classList.remove('invisible')
+        }, 1)
     }
-    for (let key of Object.keys(defaultOptions)) {
-      if (this.#options[key] === undefined) {
-        this.#options[key] = defaultOptions[key]
-      }
+
+    hidePopup() {
+        var popup = document.getElementById(this.id)
+
+        this.#visible = false
+        popup.classList.add('invisible')
+        setTimeout(function () {
+            popup.classList.add('intangible')
+        }, 200)
     }
-  }
 
-  constructor(content = '', options = {}) {
-    this.#options = options
-    this.#fillOptions()
-    this.level = SuopPopup.zIndex
-    this.id = 'suop-popup' + this.level
-    this._content = content
-    var body = document.querySelector('body')
-
-    body.prepend(this.createPopupElement())
-    this.#createActions()
-  }
-
-  toggle() {
-    if (this.#visible) {
-      this.hidePopup()
-    } else {
-      this.showPopup()
+    remove(delay) {
+        var popup = document.getElementById(this.id)
+        setTimeout(() => popup.remove(), delay)
     }
-  }
 
-  showPopup() {
-    this.#visible = true
-    var popup = document.getElementById(this.id)
-    popup.classList.remove('intangible')
-    setTimeout(function () {
-      popup.classList.remove('invisible')
-    }, 1)
-  }
-
-  hidePopup() {
-    var popup = document.getElementById(this.id)
-
-    this.#visible = false
-    popup.classList.add('invisible')
-    setTimeout(function () {
-      popup.classList.add('intangible')
-    }, 200)
-  }
-
-  remove(delay) {
-    var popup = document.getElementById(this.id)
-    setTimeout(() => popup.remove(), delay)
-  }
-
-  hideThenDelete() {
-    this.hidePopup()
-    this.remove(200)
-  }
+    hideThenDelete() {
+        this.hidePopup()
+        this.remove(200)
+    }
 }
