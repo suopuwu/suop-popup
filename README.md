@@ -24,6 +24,7 @@ The SuopPopup class has two parameters: content and options. Content is an HTML 
 | x | Number or null | null | When popup is floating, determines the x position of the popup. |
 | y | Number or null | null | When popup is floating, determines the y position of the popup. |
 | shadow | string | '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)' | The css string used to style the popup's shadow. |
+
 You only have to specify the options you use, the rest will be filled in automatically.
 ### Methods
 A suop popup has the following methods
